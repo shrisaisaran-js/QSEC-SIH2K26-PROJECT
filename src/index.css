@@ -1,0 +1,237 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-dark-950 text-slate-300 font-sans antialiased overflow-x-hidden selection:bg-quantum-blue/30 selection:text-white;
+    background-image: 
+      radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.05) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(189, 0, 255, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, rgba(0, 240, 255, 0.03) 0%, transparent 50%),
+      linear-gradient(to bottom, #02040a, #090d16);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-white font-sans tracking-tight;
+  }
+}
+
+/* Custom Utilities for Quantum Dashboard */
+@layer components {
+  .glass-card {
+    @apply bg-dark-900/40 backdrop-blur-xl border border-slate-800/40 rounded-xl transition-all duration-300;
+  }
+  
+  .glass-card-hover {
+    @apply hover:border-quantum-blue/30 hover:bg-dark-900/60 hover:shadow-glow-blue;
+  }
+
+  .glass-card-purple {
+    @apply bg-dark-900/40 backdrop-blur-xl border border-purple-950/40 rounded-xl transition-all duration-300;
+  }
+  
+  .glass-card-purple-hover {
+    @apply hover:border-quantum-purple/30 hover:bg-dark-900/60 hover:shadow-glow-purple;
+  }
+
+  /* Premium glass panel — used for nav surfaces (sidebar/topbar) that need a
+     stronger, more opaque blur than content cards. */
+  .glass-panel {
+    @apply bg-dark-900/70 backdrop-blur-2xl border border-slate-800/60 relative;
+  }
+
+  /* Dense surface for information that must stay highly readable
+     (crypto values, tables, logs) — less transparent than .glass-card. */
+  .glass-dense {
+    @apply bg-dark-950/80 backdrop-blur-md border border-slate-800/60 rounded-lg;
+  }
+
+  /* Neumorphic-inspired raised surface: soft dual shadow giving subtle
+     physical depth on top of the glass system. */
+  .neu-raised {
+    box-shadow:
+      6px 6px 14px rgba(0, 0, 0, 0.35),
+      -3px -3px 10px rgba(255, 255, 255, 0.02);
+  }
+
+  .neu-raised-hover {
+    @apply transition-all duration-200;
+  }
+  .neu-raised-hover:hover {
+    box-shadow:
+      8px 8px 20px rgba(0, 0, 0, 0.4),
+      -4px -4px 14px rgba(255, 255, 255, 0.03),
+      0 0 20px rgba(0, 240, 255, 0.08);
+    transform: translateY(-2px);
+  }
+
+  /* Pressed/inset state for active buttons or toggled controls. */
+  .neu-pressed {
+    box-shadow:
+      inset 3px 3px 8px rgba(0, 0, 0, 0.45),
+      inset -2px -2px 6px rgba(255, 255, 255, 0.02);
+  }
+
+  /* CyberButton base — a raised, glassy, keyboard-accessible action button
+     with a subtle press/lift micro-interaction. */
+  .cyber-btn {
+    @apply relative inline-flex items-center justify-center gap-2 rounded-lg
+      font-mono font-bold uppercase tracking-wide
+      border transition-all duration-150 ease-out
+      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-quantum-blue/60 focus-visible:ring-offset-2 focus-visible:ring-offset-dark-950
+      disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:translate-y-0;
+    box-shadow:
+      4px 4px 10px rgba(0, 0, 0, 0.35),
+      -2px -2px 8px rgba(255, 255, 255, 0.02);
+  }
+  .cyber-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+  }
+  .cyber-btn:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow:
+      inset 2px 2px 6px rgba(0, 0, 0, 0.4),
+      inset -1px -1px 4px rgba(255, 255, 255, 0.02);
+  }
+
+  /* Generic hover-lift for interactive cards. */
+  .card-lift {
+    @apply transition-all duration-200 ease-out;
+  }
+  .card-lift:hover {
+    transform: translateY(-3px);
+  }
+
+  .text-glow-blue {
+    text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+  }
+
+  .text-glow-purple {
+    text-shadow: 0 0 10px rgba(189, 0, 255, 0.5);
+  }
+
+  .text-glow-green {
+    text-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+  }
+
+  .glow-border-blue {
+    @apply border border-quantum-blue/40 shadow-glow-blue;
+  }
+
+  .glow-border-purple {
+    @apply border border-quantum-purple/40 shadow-glow-purple;
+  }
+
+  /* Status pulse dot, used for live/online indicators in the topbar. */
+  .status-pulse-dot {
+    @apply relative inline-flex h-2 w-2 rounded-full;
+  }
+  .status-pulse-dot::after {
+    content: '';
+    @apply absolute inset-0 rounded-full motion-safe:animate-ping motion-reduce:hidden;
+    background: inherit;
+    opacity: 0.6;
+  }
+}
+
+/* Custom Scrollbar for Research Console */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-dark-950;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-dark-800 rounded-md hover:bg-quantum-blue/50 transition-colors;
+}
+
+/* Safe wrapping for long cryptographic values (hashes, signatures, IDs) */
+.crypto-value {
+  @apply font-mono text-xs break-all whitespace-pre-wrap;
+}
+
+/* Respect reduced-motion preference globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Quantum Circuit Grids & Lines */
+.quantum-grid {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.01) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.01) 1px, transparent 1px);
+}
+
+.quantum-scan-line {
+  position: relative;
+  overflow: hidden;
+}
+
+.quantum-scan-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.5), transparent);
+  animation: scan 4s linear infinite;
+}
+
+@keyframes scan {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Quantum-inspired motion motifs — used sparingly by QuantumNode / the QDS
+   Protocol page. All respect prefers-reduced-motion via motion-safe:. */
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.animate-orbit-slow {
+  animation: orbit-spin 18s linear infinite;
+}
+.animate-orbit-slow-reverse {
+  animation: orbit-spin 24s linear infinite reverse;
+}
+
+@keyframes node-pulse-ring {
+  0% { transform: scale(0.9); opacity: 0.7; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+.node-pulse-ring {
+  animation: node-pulse-ring 2.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes particle-drift {
+  0% { transform: translate3d(0, 0, 0); opacity: 0.15; }
+  50% { opacity: 0.5; }
+  100% { transform: translate3d(0, -18px, 0); opacity: 0.15; }
+}
+.animate-particle-drift {
+  animation: particle-drift 6s ease-in-out infinite;
+}
+
+@keyframes card-entrance {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-card-entrance {
+  animation: card-entrance 0.35s ease-out both;
+}
