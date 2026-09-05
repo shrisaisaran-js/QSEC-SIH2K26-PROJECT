@@ -1,42 +1,49 @@
 const mongoose = require("mongoose");
 
-/**
- * Connects to MongoDB using Mongoose.
- * Fails loudly (and lets the caller decide whether to exit) rather than
- * silently running the API against a dead database.
- */
+let connectionPromise = null;
+
 async function connectDatabase() {
   const uri = process.env.MONGO_URI;
 
   if (!uri) {
     throw new Error(
-      "MONGO_URI is not set. Copy .env.example to .env and configure your MongoDB connection string."
+      "MONGO_URI is not set. Configure it in your environment variables."
     );
   }
 
   mongoose.set("strictQuery", true);
 
-  mongoose.connection.on("connected", () => {
-    console.log("[database] MongoDB connection established");
-  });
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
 
-  mongoose.connection.on("error", (err) => {
-    console.error("[database] MongoDB connection error:", err.message);
-  });
+  if (!connectionPromise) {
+    connectionPromise = mongoose
+      .connect(uri, {
+        serverSelectionTimeoutMS: 8000,
+      })
+      .then(() => {
+        console.log("[database] MongoDB connection established");
+        return mongoose.connection;
+      })
+      .catch((err) => {
+        connectionPromise = null;
+        console.error(
+          "[database] MongoDB connection error:",
+          err.message
+        );
+        throw err;
+      });
+  }
 
-  mongoose.connection.on("disconnected", () => {
-    console.warn("[database] MongoDB disconnected");
-  });
-
-  await mongoose.connect(uri, {
-    serverSelectionTimeoutMS: 8000,
-  });
-
-  return mongoose.connection;
+  return connectionPromise;
 }
 
 function isDatabaseConnected() {
-  return mongoose.connection.readyState === 1; // 1 = connected
+  return mongoose.connection.readyState === 1;
 }
 
-module.exports = { connectDatabase, isDatabaseConnected };
+module.exports = {
+  connectDatabase,
+  isDatabaseConnected,
+};
